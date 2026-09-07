@@ -23,6 +23,13 @@ a{color:#f2c15a}a:hover{color:#ffd980}
   #disc > div:first-child{align-self:center!important}
   #disc a{align-self:center!important}
 }
+/* portrait phones: pull the cabinet closer — sides may crop slightly, the screen stays readable */
+@media (max-width: 900px) and (orientation: portrait){
+  #cabWrap{aspect-ratio:1.2485!important;overflow:hidden!important}
+  #cab{position:absolute!important;left:50%!important;top:50%!important;width:118%!important;transform:translate(-50%,-50%)!important}
+  #disc > div:nth-child(2){font-size:0.64rem!important;line-height:1.75!important}
+  #disc a{font-size:0.6rem!important}
+}
 /* landscape phones/tablets: fit the cabinet to the available height */
 @media (max-width: 1250px) and (orientation: landscape){
   #stage{gap:0.5rem!important;padding:0.6rem 0.6rem 0.5rem!important}
@@ -32,7 +39,7 @@ a{color:#f2c15a}a:hover{color:#ffd980}
   #disc{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;align-items:baseline!important;gap:0.5rem!important;max-width:56rem!important}
   #disc > div:first-child{display:none!important}
   #disc > div:nth-child(2){color:#c8b493!important;font-size:0.6rem!important;line-height:1.5!important}
-  #disc a{font-size:0.58rem!important;color:#d9b775!important;border-bottom:none!important;white-space:nowrap!important}
+  #disc a{font-size:0.6rem!important;color:#d9b775!important;border-bottom:none!important;white-space:nowrap!important}
 }
 @keyframes bgDrift{
   0%{transform:scale(1.16) translate3d(-2.6%,-0.9%,0)}
