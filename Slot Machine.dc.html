@@ -15,6 +15,25 @@ html,body{margin:0;padding:0;background:#15100d;min-height:100%;}
 a{color:#f2c15a}a:hover{color:#ffd980}
 @keyframes ticker{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+/* narrow / touch: same cabinet, fitted to the screen; disclaimer moves out of the art */
+@media (max-width: 1250px){
+  #stage{flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1rem!important;padding:1.2rem 0.6rem!important;min-height:100dvh!important}
+  #cabWrap{width:100%!important;max-width:none!important}
+  #disc{position:static!important;width:100%!important;max-width:34rem!important;align-items:center!important;text-align:center!important;padding:0 0.4rem!important;order:3}
+  #disc > div:first-child{align-self:center!important}
+  #disc a{align-self:center!important}
+}
+/* landscape phones/tablets: fit the cabinet to the available height */
+@media (max-width: 1250px) and (orientation: landscape){
+  #stage{gap:0.5rem!important;padding:0.6rem 0.6rem 0.5rem!important}
+  #cabWrap{width:auto!important;height:calc(100dvh - 4.4rem)!important;max-height:calc(100dvh - 4.4rem)!important;aspect-ratio:2263/1536!important}
+  #cab{height:100%!important}
+  /* slim one-line legal strip so the notice stays visible */
+  #disc{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;align-items:baseline!important;gap:0.5rem!important;max-width:56rem!important}
+  #disc > div:first-child{display:none!important}
+  #disc > div:nth-child(2){color:#c8b493!important;font-size:0.6rem!important;line-height:1.5!important}
+  #disc a{font-size:0.58rem!important;color:#d9b775!important;border-bottom:none!important;white-space:nowrap!important}
+}
 @keyframes bgDrift{
   0%{transform:scale(1.16) translate3d(-2.6%,-0.9%,0)}
   50%{transform:scale(1.16) translate3d(2.6%,0.9%,0)}
@@ -36,16 +55,16 @@ a{color:#f2c15a}a:hover{color:#ffd980}
 }
 </style>
 </helmet>
-<div style="position:relative;width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2vh 1vw;box-sizing:border-box;background:#15100d;overflow:hidden;user-select:none;-webkit-user-select:none">
+<div id="stage" style="position:relative;width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2vh 1vw;box-sizing:border-box;background:#15100d;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation">
   <img src="assets/bg-casino.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;animation:bgDrift 64s ease-in-out infinite;will-change:transform">
   <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(10,7,5,.28) 0%,rgba(10,7,5,.62) 70%,rgba(6,4,3,.85) 100%)"></div>
-  <div style="position:absolute;z-index:4;left:2.2vw;top:3.4vh;width:min(14rem,17vw);display:flex;flex-direction:column;gap:0.85rem;font-family:ui-serif,Georgia,'Times New Roman',serif">
+  <div id="disc" style="position:absolute;z-index:4;left:2.2vw;top:3.4vh;width:min(14rem,17vw);display:flex;flex-direction:column;gap:0.85rem;font-family:ui-serif,Georgia,'Times New Roman',serif">
     <div style="width:1.6rem;height:1px;background:rgba(214,178,110,.45)"></div>
     <div style="color:rgba(224,205,175,.5);font-size:0.72rem;line-height:1.85;letter-spacing:.02em;text-wrap:pretty">This is not a real game or gambling product. It is an interactive demo created solely to showcase EXYZ Studio&rsquo;s creative and technical capabilities. No real money or gambling is involved.</div>
     <a href="https://www.exyz.studio/contact" target="_blank" rel="noopener" style="color:rgba(214,178,110,.62);font-size:0.66rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(214,178,110,.22);align-self:flex-start;padding-bottom:0.15rem" style-hover="color:rgba(240,205,140,.95);border-bottom:1px solid rgba(240,205,140,.5)">exyz.studio/contact</a>
   </div>
-<div style="position:relative;width:100%;max-width:1500px;container-type:inline-size">
-<div style="position:relative;width:100%;aspect-ratio:2263/1536;font-family:'Press Start 2P',monospace">
+<div id="cabWrap" style="position:relative;width:100%;max-width:1500px;container-type:inline-size">
+<div id="cab" style="position:relative;width:100%;aspect-ratio:2263/1536;container-type:inline-size;font-family:'Press Start 2P',monospace">
 
   <!-- reels layer (behind the machine window) -->
   <div style="position:absolute;left:23.33%;top:25.26%;width:52.23%;height:34.18%;display:flex;background:#f4f1ea;overflow:hidden">
@@ -173,6 +192,8 @@ a{color:#f2c15a}a:hover{color:#ffd980}
 
 </div>
 </div>
+
+
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;startCredits&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:20000,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:100,&quot;max&quot;:1000000,&quot;step&quot;:100,&quot;section&quot;:&quot;Game&quot;},&quot;jackpotStart&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1285700,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:1000,&quot;max&quot;:100000000,&quot;step&quot;:1000,&quot;section&quot;:&quot;Game&quot;}}">
@@ -450,6 +471,7 @@ class Component extends DCLogic {
       leverRef: this.leverRef,
       b, lit, bounce, reels, winLinesSvg, card, toggleCard: this.toggleCard, cardCursor: s.card === 'out' ? 'pointer' : 'default',
       noCard: !inCard, cardHint: s.card === 'out',
+      canSpin: s.card !== 'out', spinLabel: s.spinning ? 'STOP' : 'SPIN', autoLabel: s.auto ? 'AUTO ON' : 'AUTO PLAY',
       showWin: s.showWin, winText: s.winText,
       showLines: !!s.showLines, activeLinesSvg,
       linesLabel: s.lines + (s.lines === 1 ? ' LINE' : ' LINES') + '  ×  ' + BETS[s.betIdx] + '  =  ' + fmt(this.totalBet()) + ' PER SPIN',
