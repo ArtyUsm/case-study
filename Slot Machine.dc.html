@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#15100d;min-height:100%;}
+a{color:#f2c15a}a:hover{color:#ffd980}
+@keyframes ticker{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes bgDrift{
+  0%{transform:scale(1.16) translate3d(-2.6%,-0.9%,0)}
+  50%{transform:scale(1.16) translate3d(2.6%,0.9%,0)}
+  100%{transform:scale(1.16) translate3d(-2.6%,-0.9%,0)}
+}
+@keyframes cardIdle{
+  0%{transform:perspective(1100px) translate3d(0,0,0) rotateX(6deg) rotateZ(-2.2deg)}
+  50%{transform:perspective(1100px) translate3d(0,-5.5%,0) rotateX(10deg) rotateZ(2.2deg)}
+  100%{transform:perspective(1100px) translate3d(0,0,0) rotateX(6deg) rotateZ(-2.2deg)}
+}
+@keyframes cardInsert{
+  0%{transform:perspective(1100px) translate3d(0,0,0) scale(1) rotateX(6deg) rotateZ(-2.2deg);animation-timing-function:cubic-bezier(.3,-0.4,.6,1)}
+  16%{transform:perspective(1100px) translate3d(-8%,-32%,0) scale(1.06) rotateX(16deg) rotateZ(-9deg);animation-timing-function:cubic-bezier(.45,.05,.55,.95)}
+  44%{transform:perspective(1100px) translate3d(-62%,26%,0) scale(.9) rotateX(24deg) rotateZ(34deg);animation-timing-function:cubic-bezier(.3,.1,.4,1)}
+  66%{transform:perspective(1100px) translate3d(-112%,80%,0) scale(.62) rotateX(7deg) rotateZ(80deg);animation-timing-function:cubic-bezier(.6,0,.9,.5)}
+  76%{transform:perspective(1100px) translate3d(-117%,92%,0) scale(.6) rotateX(0deg) rotateZ(90deg);clip-path:inset(0 0 0 0);animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+  83%{transform:perspective(1100px) translate3d(-117%,86%,0) scale(.6) rotateX(0deg) rotateZ(90deg);clip-path:inset(0 0 0 0);animation-timing-function:cubic-bezier(.5,0,.7,1)}
+  100%{transform:perspective(1100px) translate3d(-117%,186%,0) scale(.6) rotateX(0deg) rotateZ(90deg);clip-path:inset(0 100% 0 0)}
+}
+</style>
+</helmet>
+<div style="position:relative;width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2vh 1vw;box-sizing:border-box;background:#15100d;overflow:hidden;user-select:none;-webkit-user-select:none">
+  <img src="assets/bg-casino.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;animation:bgDrift 64s ease-in-out infinite;will-change:transform">
+  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(10,7,5,.28) 0%,rgba(10,7,5,.62) 70%,rgba(6,4,3,.85) 100%)"></div>
+  <div style="position:absolute;z-index:4;left:2.2vw;top:3.4vh;width:min(14rem,17vw);display:flex;flex-direction:column;gap:0.85rem;font-family:ui-serif,Georgia,'Times New Roman',serif">
+    <div style="width:1.6rem;height:1px;background:rgba(214,178,110,.45)"></div>
+    <div style="color:rgba(224,205,175,.5);font-size:0.72rem;line-height:1.85;letter-spacing:.02em;text-wrap:pretty">This is not a real game or gambling product. It is an interactive demo created solely to showcase EXYZ Studio&rsquo;s creative and technical capabilities. No real money or gambling is involved.</div>
+    <a href="https://www.exyz.studio/contact" target="_blank" rel="noopener" style="color:rgba(214,178,110,.62);font-size:0.66rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid rgba(214,178,110,.22);align-self:flex-start;padding-bottom:0.15rem" style-hover="color:rgba(240,205,140,.95);border-bottom:1px solid rgba(240,205,140,.5)">exyz.studio/contact</a>
+  </div>
+<div style="position:relative;width:100%;max-width:1500px;container-type:inline-size">
+<div style="position:relative;width:100%;aspect-ratio:2263/1536;font-family:'Press Start 2P',monospace">
+
+  <!-- reels layer (behind the machine window) -->
+  <div style="position:absolute;left:23.33%;top:25.26%;width:52.23%;height:34.18%;display:flex;background:#f4f1ea;overflow:hidden">
+    <sc-for list="{{ reels }}" as="reel" hint-placeholder-count="5">
+      <div style="position:relative;flex:1;height:100%;overflow:hidden;border-right:0.15cqw solid #c9c2b6;background:linear-gradient(180deg,#d9d4ca 0%,#fbfaf6 22%,#fbfaf6 78%,#d9d4ca 100%);transition:filter .2s ease-out;filter: {{ reel.filter }}">
+        <sc-for list="{{ reel.cells }}" as="cell" hint-placeholder-count="5">
+          <div style="position:absolute;left:0;width:100%;height:33.333%;display:flex;align-items:center;justify-content:center;transition:opacity .22s ease-out;top: {{ cell.top }};opacity: {{ cell.op }}">
+            <sc-if value="{{ cell.isImg }}" hint-placeholder-val="{{ false }}">
+              <div style="width:74%;height:74%;background-repeat:no-repeat;background-position:center;background-size:contain;filter:drop-shadow(0 0.25cqw 0.35cqw rgba(0,0,0,.28));background-image: {{ cell.bg }}"></div>
+            </sc-if>
+            <sc-if value="{{ cell.isGlyph }}" hint-placeholder-val="{{ true }}">
+              <span style="font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;line-height:1;font-size: {{ cell.fs }}">{{ cell.glyph }}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+    <svg viewBox="0 0 500 300" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible">
+      <sc-for list="{{ winLinesSvg }}" as="wl" hint-placeholder-count="0">
+        <polyline points="{{ wl.points }}" fill="none" stroke="{{ wl.color }}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"></polyline>
+      </sc-for>
+    </svg>
+    <sc-if value="{{ showLines }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;background:rgba(8,6,4,.78)">
+        <svg viewBox="0 0 500 300" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+          <sc-for list="{{ activeLinesSvg }}" as="al" hint-placeholder-count="0">
+            <polyline points="{{ al.points }}" fill="none" stroke="{{ al.color }}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"></polyline>
+          </sc-for>
+        </svg>
+        <sc-for list="{{ activeLinesSvg }}" as="al" hint-placeholder-count="0">
+          <div style="position:absolute;transform:translateY(-50%);width:1.8cqw;height:1.8cqw;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8cqw;color:#111;background: {{ al.color }};top: {{ al.labelTop }};left: {{ al.labelLeft }};right: {{ al.labelRight }}">{{ al.num }}</div>
+        </sc-for>
+        <div style="position:absolute;left:0;right:0;bottom:0.8cqw;text-align:center;color:#ffd15c;font-size:0.9cqw;letter-spacing:.15em;text-shadow:0 0 0.5cqw rgba(255,200,80,.7)">{{ linesLabel }}</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ showWin }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#2a1206;border:0.35cqw solid #f0b640;border-radius:0.6cqw;padding:1.1cqw 2.4cqw;box-shadow:0 0 2cqw rgba(0,0,0,.6),inset 0 0 1cqw rgba(255,180,60,.25);text-align:center">
+        <div style="color:#f0b640;font-size:0.8cqw;letter-spacing:.2em;margin-bottom:0.7cqw">WINNER</div>
+        <div style="color:#ffd15c;font-size:2.4cqw;text-shadow:0 0 0.6cqw rgba(255,190,60,.8)">{{ winText }}</div>
+        <div style="color:#f0b640;font-size:0.6cqw;margin-top:0.6cqw;opacity:.85">CREDITS</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ noCard }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;background:rgba(10,8,6,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2cqw;text-align:center">
+        <div style="color:#f0b640;font-size:1.3cqw;line-height:1.7;animation:blink 1.6s ease-in-out infinite">INSERT PLAYERS CARD</div>
+        <div style="color:#8a7a5a;font-size:0.65cqw;line-height:1.8">CARD READER ON THE RIGHT</div>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- glass: edge refraction blur + curvature glare + vignette -->
+  <div style="position:absolute;left:23.33%;top:25.26%;width:52.23%;height:34.18%;pointer-events:none;backdrop-filter:blur(0.22cqw);-webkit-backdrop-filter:blur(0.22cqw);-webkit-mask-image:radial-gradient(ellipse 62% 62% at 50% 50%,transparent 60%,#000 100%);mask-image:radial-gradient(ellipse 62% 62% at 50% 50%,transparent 60%,#000 100%)"></div>
+  <div style="position:absolute;left:23.33%;top:25.26%;width:52.23%;height:34.18%;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 50% 50%,rgba(0,0,0,0) 55%,rgba(0,0,0,.22) 80%,rgba(0,0,0,.5) 100%),linear-gradient(112deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.08) 18%,rgba(255,255,255,0) 32%,rgba(255,255,255,0) 68%,rgba(255,255,255,.05) 85%,rgba(255,255,255,.14) 100%),radial-gradient(ellipse 120% 40% at 50% -10%,rgba(255,255,255,.18),rgba(255,255,255,0) 60%);box-shadow:inset 0 0 1.2cqw rgba(0,0,0,.55),inset 0 0.3cqw 0.6cqw rgba(255,255,255,.12)"></div>
+
+  <!-- machine artwork -->
+  <img src="assets/machine.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block">
+
+  <!-- lever: image sequence, frame 0 at rest, plays once per pull -->
+  <div ref="{{ leverRef }}" style="position:absolute;left:75.65%;top:21.09%;width:16.61%;height:46.74%;pointer-events:none;background-image:url(assets/lever-sheet.png);background-repeat:no-repeat;background-size:600% 500%;background-position:0% 0%;will-change:background-position"></div>
+
+  <!-- lit button layers: visible by default, hidden while pressed -->
+  <img src="assets/spin.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:75.8% 79.9%;opacity: {{ lit.spin }};transform: {{ bounce.spin }}">
+  <img src="assets/autoplay.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:63.4% 80.3%;opacity: {{ lit.auto }};transform: {{ bounce.auto }}">
+  <img src="assets/cashout.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:49.1% 80.3%;opacity: {{ lit.cashout }};transform: {{ bounce.cashout }}">
+  <img src="assets/maxbet.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:34.9% 80.1%;opacity: {{ lit.maxbet }};transform: {{ bounce.maxbet }}">
+  <!-- +/- layers: hidden by default, lit while pressed -->
+  <img src="assets/plus-left.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:20.5% 77.5%;opacity: {{ lit.plusL }};transform: {{ bounce.plusL }}">
+  <img src="assets/plus-right.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:26.6% 77.5%;opacity: {{ lit.plusR }};transform: {{ bounce.plusR }}">
+  <img src="assets/minus-left.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:20.2% 82%;opacity: {{ lit.minusL }};transform: {{ bounce.minusL }}">
+  <img src="assets/minus-right.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:transform .12s cubic-bezier(.34,1.56,.64,1);transform-origin:26.4% 82%;opacity: {{ lit.minusR }};transform: {{ bounce.minusR }}">
+
+  <!-- jackpot display -->
+  <div style="position:absolute;left:27.62%;top:8.4%;width:43.08%;height:4.6%;display:flex;align-items:center;justify-content:center;color:#ffb42a;font-size:2.2cqw;letter-spacing:.06em;text-shadow:0 0 0.5cqw rgba(255,170,40,.75),0 0 1.4cqw rgba(255,140,20,.35)">{{ jackpotText }}</div>
+
+  <!-- ticker -->
+  <div style="position:absolute;left:33.14%;top:16.28%;width:31.6%;height:4.43%;overflow:hidden;display:flex;align-items:center">
+    <div style="white-space:nowrap;color:#7cff5a;font-size:1.15cqw;letter-spacing:.05em;text-shadow:0 0 0.4cqw rgba(120,255,90,.7);animation:ticker 9s linear infinite;will-change:transform">{{ msg }}</div>
+  </div>
+
+  <!-- info strip -->
+  <div style="position:absolute;left:23.33%;top:60.42%;width:52.23%;height:5.86%;display:grid;grid-template-columns:32.5% 34.8% 32.7%">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.45cqw">
+      <div style="color:#8f8a7e;font-size:0.6cqw;letter-spacing:.15em">CREDITS</div>
+      <div style="color:#ff4a3a;font-size:1.3cqw;text-shadow:0 0 0.5cqw rgba(255,70,50,.7)">{{ creditsText }}</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:2.4cqw">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.45cqw">
+        <div style="color:#8f8a7e;font-size:0.6cqw;letter-spacing:.15em">LINES</div>
+        <div style="color:#5cff7a;font-size:1.3cqw;text-shadow:0 0 0.5cqw rgba(90,255,120,.7)">{{ linesText }}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.45cqw">
+        <div style="color:#8f8a7e;font-size:0.6cqw;letter-spacing:.15em">BET/LINE</div>
+        <div style="color:#5cff7a;font-size:1.3cqw;text-shadow:0 0 0.5cqw rgba(90,255,120,.7)">{{ betText }}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.45cqw">
+        <div style="color:#8f8a7e;font-size:0.6cqw;letter-spacing:.15em">TOTAL</div>
+        <div style="color:#5cff7a;font-size:1.3cqw;text-shadow:0 0 0.5cqw rgba(90,255,120,.7)">{{ totalBetText }}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.45cqw">
+      <div style="color:#8f8a7e;font-size:0.6cqw;letter-spacing:.15em">WIN</div>
+      <div style="color:#ffd15c;font-size:1.3cqw;text-shadow:0 0 0.5cqw rgba(255,200,80,.7)">{{ winValText }}</div>
+    </div>
+  </div>
+
+  <!-- player card: above all machine layers -->
+  <div onClick="{{ toggleCard }}" style="position:absolute;left:83.4%;top:69%;width:14%;aspect-ratio:1306/838;z-index:5;transform-style:preserve-3d;opacity: {{ card.opacity }};cursor: {{ cardCursor }};animation: {{ card.anim }};filter:drop-shadow(0 1.2cqw 1.4cqw rgba(0,0,0,.55))">
+    <img src="assets/player-card.png" alt="Player card" style="width:100%;height:100%;display:block;object-fit:contain;pointer-events:none">
+  </div>
+
+  <!-- hotspots -->
+  <div title="Lines +" style="position:absolute;left:18.07%;top:75.91%;width:4.95%;height:3.19%;cursor:pointer" onPointerDown="{{ b.plusL.down }}" onPointerUp="{{ b.plusL.up }}" onPointerLeave="{{ b.plusL.leave }}" onClick="{{ b.plusL.click }}"></div>
+  <div title="Lines −" style="position:absolute;left:17.63%;top:80.47%;width:5.17%;height:3.13%;cursor:pointer" onPointerDown="{{ b.minusL.down }}" onPointerUp="{{ b.minusL.up }}" onPointerLeave="{{ b.minusL.leave }}" onClick="{{ b.minusL.click }}"></div>
+  <div title="Bet +" style="position:absolute;left:24.13%;top:75.98%;width:4.95%;height:3.06%;cursor:pointer" onPointerDown="{{ b.plusR.down }}" onPointerUp="{{ b.plusR.up }}" onPointerLeave="{{ b.plusR.leave }}" onClick="{{ b.plusR.click }}"></div>
+  <div title="Bet −" style="position:absolute;left:23.91%;top:80.4%;width:5.08%;height:3.19%;cursor:pointer" onPointerDown="{{ b.minusR.down }}" onPointerUp="{{ b.minusR.up }}" onPointerLeave="{{ b.minusR.leave }}" onClick="{{ b.minusR.click }}"></div>
+  <div title="Max Bet" style="position:absolute;left:30.49%;top:75.52%;width:8.84%;height:9.11%;cursor:pointer" onPointerDown="{{ b.maxbet.down }}" onPointerUp="{{ b.maxbet.up }}" onPointerLeave="{{ b.maxbet.leave }}" onClick="{{ b.maxbet.click }}"></div>
+  <div title="Cash Out" style="position:absolute;left:39.95%;top:75.26%;width:18.34%;height:10.09%;cursor:pointer" onPointerDown="{{ b.cashout.down }}" onPointerUp="{{ b.cashout.up }}" onPointerLeave="{{ b.cashout.leave }}" onClick="{{ b.cashout.click }}"></div>
+  <div title="Auto Play" style="position:absolute;left:58.37%;top:75.26%;width:10.12%;height:10.09%;cursor:pointer" onPointerDown="{{ b.auto.down }}" onPointerUp="{{ b.auto.up }}" onPointerLeave="{{ b.auto.leave }}" onClick="{{ b.auto.click }}"></div>
+  <div title="Spin" style="position:absolute;left:68.98%;top:75.98%;width:12.68%;height:7.88%;cursor:pointer" onPointerDown="{{ b.spin.down }}" onPointerUp="{{ b.spin.up }}" onPointerLeave="{{ b.spin.leave }}" onClick="{{ b.spin.click }}"></div>
+  <div title="Lever" style="position:absolute;left:85.3%;top:23.4%;width:6.6%;height:41.7%;cursor:grab" onClick="{{ b.spin.click }}"></div>
+
+  <sc-if value="{{ cardHint }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;left:87.5%;top:86%;width:12%;text-align:center;color:#c9a24a;font-size:0.6cqw;line-height:1.8;letter-spacing:.1em;animation:blink 1.6s ease-in-out infinite">TAP CARD<br>TO INSERT</div>
+  </sc-if>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startCredits&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:20000,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:100,&quot;max&quot;:1000000,&quot;step&quot;:100,&quot;section&quot;:&quot;Game&quot;},&quot;jackpotStart&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1285700,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:1000,&quot;max&quot;:100000000,&quot;step&quot;:1000,&quot;section&quot;:&quot;Game&quot;}}">
+const SYMS = {
+  cherry: { img: 'assets/sym/cherry.png', pay: [0, 0, 5, 15, 40] },
+  lemon: { img: 'assets/sym/lemon.png', pay: [0, 0, 5, 20, 50] },
+  orange: { img: 'assets/sym/orange.png', pay: [0, 0, 8, 25, 60] },
+  plum: { img: 'assets/sym/plum.png', pay: [0, 0, 10, 30, 80] },
+  melon: { img: 'assets/sym/melon.png', pay: [0, 0, 15, 50, 150] },
+  bar: { img: 'assets/sym/bar.png', pay: [0, 0, 25, 100, 300] },
+  seven: { img: 'assets/sym/seven.png', pay: [0, 0, 50, 200, 1000] },
+  diamond: { img: 'assets/sym/diamond.png', pay: [0, 0, 100, 500, 0], jackpot: true },
+};
+const STRIP = ['cherry','lemon','orange','cherry','plum','melon','lemon','cherry','bar','orange','cherry','lemon','plum','seven','cherry','melon','orange','lemon','diamond','plum'];
+const N = STRIP.length;
+const LINES = [[1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2]];
+const SEED_SYMS = ['cherry','cherry','cherry','lemon','lemon','orange','orange','plum','melon','bar','seven'];
+const LINE_COLORS = ['#ff3b30','#2f8cff','#ffcc00','#34c759','#c561ff'];
+const BETS = [5, 10, 25, 50, 100];
+const mod = (a, n) => ((a % n) + n) % n;
+const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const easeOut = u => { const c1 = 0.9, c3 = c1 + 1, v = u - 1; return 1 + c3 * v * v * v + c1 * v * v; };
+const LEVER_FRAMES = 26, LEVER_FPS = 24, LEVER_COLS = 6, LEVER_ROWS = 5;
+
+class Component extends DCLogic {
+  state = {
+    card: 'out', cardBalance: null, credits: 0, betIdx: 2, lines: 5, lastWin: 0,
+    jackpot: 0, pos: [0, 7, 14, 21, 28], spinning: false, pressed: {}, auto: false,
+    msg: 'INSERT PLAYERS CARD TO BEGIN', winLines: [], showWin: false, winText: '',
+  };
+  reels = [];
+  raf = null;
+  timers = [];
+  leverCur = 0;
+  initAudio = () => {
+    if (this.audioOn) return; this.audioOn = true;
+    const mk = (src, vol, loop) => { const a = new Audio(src); a.volume = vol; a.loop = !!loop; return a; };
+    this.sndMusic = mk('assets/audio/music.mp3', 0.13, true);
+    this.sndRoom = mk('assets/audio/casino-ambience.wav', 0.18, true);
+    this.sndRare = mk('assets/audio/ambient-rare.mp3', 0.3);
+    this.sndLever = mk('assets/audio/lever.mp3', 0.65);
+    this.sndWin = mk('assets/audio/win.mp3', 0.5);
+    this.sndBtn = Array.from({ length: 4 }, () => mk('assets/audio/button.mp3', 0.45));
+    this.sndStop = [1, 2].map(i => mk('assets/audio/reel-stop-' + i + '.mp3', 0.5));
+    this.sndMusic.play().catch(() => {}); this.sndRoom.play().catch(() => {});
+    const rare = () => {
+      this.rareT = this.later(() => { if (this.sndRare) { this.sndRare.currentTime = 0; this.sndRare.play().catch(() => {}); } rare(); }, 32000 + Math.random() * 58000);
+    };
+    rare();
+  };
+  // mechanical reel whir, synthesized (filtered noise + rotor tremolo)
+  spinRig() {
+    if (this.rig) return this.rig;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+    const ctx = this.actx || (this.actx = new AC());
+    const len = ctx.sampleRate * 2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    let lp = 0;
+    for (let i = 0; i < len; i++) { lp += (Math.random() * 2 - 1 - lp) * 0.35; d[i] = lp; }
+    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = 1.1;
+    const trem = ctx.createOscillator(); trem.type = 'sine'; trem.frequency.value = 26;
+    const depth = ctx.createGain(); depth.gain.value = 0.35;
+    const tremG = ctx.createGain(); tremG.gain.value = 0.65; // 0.65 ± 0.35 rotor wobble
+    const gain = ctx.createGain(); gain.gain.value = 0;      // master: true silence at 0
+    trem.connect(depth); depth.connect(tremG.gain);
+    src.connect(bp); bp.connect(tremG); tremG.connect(gain); gain.connect(ctx.destination);
+    src.start(); trem.start();
+    return (this.rig = { ctx, gain });
+  }
+  fadeSpin(to) {
+    const rig = this.spinRig(); if (!rig) return;
+    if (rig.ctx.state === 'suspended') rig.ctx.resume();
+    const t = rig.ctx.currentTime;
+    rig.gain.gain.cancelScheduledValues(t);
+    rig.gain.gain.setValueAtTime(rig.gain.gain.value, t);
+    rig.gain.gain.linearRampToValueAtTime(to, t + (to > 0 ? 0.12 : 0.35));
+  }
+  play(a) { if (!a) return; try { a.currentTime = 0; a.play().catch(() => {}); } catch (e) {} }
+  clickSnd() { const p = this.sndBtn; if (!p) return; this.btnI = ((this.btnI || 0) + 1) % p.length; this.play(p[this.btnI]); }
+  componentDidMount() {
+    window.addEventListener('pointerdown', this.initAudio, { once: true });
+    this.setState({ jackpot: this.props.jackpotStart ?? 1285700 });
+
+    this.jp = setInterval(() => this.setState(s => ({ jackpot: s.jackpot + 3 + Math.floor(Math.random() * 40) })), 450);
+  }
+  componentWillUnmount() { if (this.actx) this.actx.close(); [this.sndMusic, this.sndRoom, this.sndRare].forEach(a => { if (a) { a.pause(); a.src = ''; } }); window.removeEventListener('pointerdown', this.initAudio); clearInterval(this.jp); cancelAnimationFrame(this.raf); cancelAnimationFrame(this.leverRaf); this.timers.forEach(clearTimeout); }
+  later(fn, ms) { const t = setTimeout(fn, ms); this.timers.push(t); return t; }
+  say(msg) { this.setState({ msg }); }
+
+  // --- card ---
+  toggleCard = () => {
+    const s = this.state;
+    if (s.card === 'out') {
+      this.setState({ card: 'inserting' });
+      this.later(() => this.setState({ card: 'in' }), 1500);
+      this.later(() => {
+        const bal = s.cardBalance ?? (this.props.startCredits ?? 20000);
+        this.setState({ credits: bal, lastWin: 0, winLines: [] });
+        this.say('WELCOME PLAYER!   GOOD LUCK   ★   SELECT LINES AND BET, THEN PRESS SPIN');
+      }, 1500);
+    }
+  };
+  cashOut() {
+    const s = this.state;
+    if (s.card !== 'in' || s.spinning) return;
+    this.setState({ card: 'ejecting', cardBalance: s.credits, credits: 0, auto: false, winLines: [], lastWin: 0 });
+    this.later(() => this.setState({ card: 'out' }), 1150);
+    this.say('THANKS FOR PLAYING   ★   ' + fmt(s.credits) + ' CREDITS SAVED TO YOUR CARD   ★   TAKE YOUR CARD');
+  }
+
+  // --- actions ---
+  ready() { return this.state.card === 'in' && !this.state.spinning; }
+  changeLines(d) {
+    if (!this.ready()) return;
+    this.setState(s => ({ lines: Math.min(5, Math.max(1, s.lines + d)), showLines: true, winLines: [] }));
+    clearTimeout(this.linesT);
+    this.linesT = this.later(() => this.setState({ showLines: false }), 3000);
+  }
+  changeBet(d) { if (!this.ready()) return; this.setState(s => ({ betIdx: Math.min(BETS.length - 1, Math.max(0, s.betIdx + d)) })); }
+  maxBet() { if (!this.ready()) return; this.setState({ lines: 5, betIdx: BETS.length - 1 }); }
+  totalBet() { return BETS[this.state.betIdx] * this.state.lines; }
+  leverRef = (el) => { this.leverEl = el; };
+  showLeverFrame(f) {
+    const el = this.leverEl; if (!el || this.leverCur === f) return;
+    const col = f % LEVER_COLS, row = Math.floor(f / LEVER_COLS);
+    el.style.backgroundPosition = (col * 100 / (LEVER_COLS - 1)) + '% ' + (row * 100 / (LEVER_ROWS - 1)) + '%';
+    this.leverCur = f;
+  }
+  pullLever() {
+    if (this.leverRaf) return;
+    this.play(this.sndLever);
+    const t0 = performance.now();
+    const step = (t) => {
+      const f = Math.floor((t - t0) / 1000 * LEVER_FPS);
+      if (f >= LEVER_FRAMES) { this.leverRaf = null; this.showLeverFrame(0); return; }
+      this.showLeverFrame(f);
+      this.leverRaf = requestAnimationFrame(step);
+    };
+    this.leverRaf = requestAnimationFrame(step);
+  }
+  spinOrStop() {
+    const s = this.state;
+    this.pullLever();
+    if (s.card !== 'in') { this.say('INSERT PLAYERS CARD TO BEGIN'); return; }
+    if (s.spinning) { const now = performance.now(); this.reels.forEach(r => { if (r.phase === 'run') r.stopAt = Math.min(r.stopAt, now); }); return; }
+    this.spin();
+  }
+  toggleAuto() {
+    const s = this.state;
+    if (s.card !== 'in') { this.say('INSERT PLAYERS CARD TO BEGIN'); return; }
+    if (s.auto) { this.setState({ auto: false }); this.say('AUTO PLAY OFF'); return; }
+    this.setState({ auto: true }); this.say('AUTO PLAY ON   ★   PRESS AUTO PLAY AGAIN TO STOP');
+    if (!s.spinning) this.spin();
+  }
+  spin() {
+    const s = this.state, bet = this.totalBet();
+    if (s.credits < bet) { this.setState({ auto: false }); this.say('INSUFFICIENT CREDITS   ★   LOWER YOUR BET OR CASH OUT'); return; }
+    const now = performance.now();
+    const targets = [0, 1, 2, 3, 4].map(() => Math.floor(Math.random() * N));
+    // seeded hit: sometimes line up 3+ matching symbols on an active line
+    if (Math.random() < 0.34) {
+      const li = Math.floor(Math.random() * s.lines), line = LINES[li];
+      const sym = SEED_SYMS[Math.floor(Math.random() * SEED_SYMS.length)];
+      const len = Math.random() < 0.16 ? 4 : 3;
+      for (let i = 0; i < len; i++) {
+        const spots = []; for (let k = 0; k < N; k++) if (STRIP[k] === sym) spots.push(k);
+        const idx = spots[Math.floor(Math.random() * spots.length)];
+        targets[i] = mod(idx - (line[i] - 1), N);
+      }
+    }
+    this.reels = s.pos.map((p, i) => ({ pos: p, speed: 22 + Math.random() * 4, phase: 'run', stopAt: now + 1100 + i * 320, target: targets[i] }));
+    clearTimeout(this.linesT);
+    this.setState(st => ({ credits: st.credits - bet, jackpot: st.jackpot + Math.round(bet * 0.02), spinning: true, winLines: [], lastWin: 0, showWin: false, showLines: false }));
+    this.say('GOOD LUCK PLAYER!');
+    this.last = now;
+    cancelAnimationFrame(this.raf);
+    this.fadeSpin(0.14);
+    this.raf = requestAnimationFrame(this.tick);
+  }
+  tick = (t) => {
+    const dt = Math.min(0.05, (t - this.last) / 1000); this.last = t;
+    let done = true;
+    for (const r of this.reels) {
+      if (r.phase === 'run') {
+        r.pos += r.speed * dt;
+        if (t >= r.stopAt) { r.phase = 'stop'; r.t0 = t; r.p0 = r.pos; r.dist = mod(r.target - r.pos, N) + N; r.dur = 720; }
+        done = false;
+      } else if (r.phase === 'stop') {
+        const u = Math.min(1, (t - r.t0) / r.dur);
+        r.pos = r.p0 + r.dist * easeOut(u);
+        if (u >= 1) {
+          r.pos = r.target; r.phase = 'done';
+          const sp = this.sndStop; if (sp) { const a = sp[(this.stopI = ((this.stopI || 0) + 1) % sp.length)]; this.play(a); }
+        } else done = false;
+      }
+    }
+    this.setState({ pos: this.reels.map(r => r.pos) });
+    if (!done) this.raf = requestAnimationFrame(this.tick);
+    else { this.fadeSpin(0); this.evaluate(); }
+  };
+  evaluate() {
+    const s = this.state, betLine = BETS[s.betIdx];
+    const grid = this.reels.map(r => [0, 1, 2].map(row => STRIP[mod(r.target + row - 1, N)]));
+    let total = 0, jackpotHit = false; const wins = [];
+    for (let li = 0; li < s.lines; li++) {
+      const line = LINES[li], first = grid[0][line[0]];
+      let count = 1; while (count < 5 && grid[count][line[count]] === first) count++;
+      if (count < 3) continue;
+      let amount = SYMS[first].pay[count - 1] * betLine;
+      if (SYMS[first].jackpot && count === 5) { amount = s.jackpot; jackpotHit = true; }
+      total += amount; wins.push({ li, count, amount });
+    }
+    const upd = { spinning: false, winLines: wins, lastWin: total };
+    if (total > 0) {
+      upd.credits = s.credits + total; upd.showWin = true; upd.winText = fmt(total);
+      this.play(this.sndWin);
+      if (jackpotHit) upd.jackpot = this.props.jackpotStart ?? 1285700;
+      this.say((jackpotHit ? '★★★ JACKPOT ★★★   ' : 'WINNER!   ') + fmt(total) + ' PAID ON ' + wins.length + (wins.length === 1 ? ' LINE' : ' LINES'));
+      this.later(() => this.setState({ showWin: false }), 1700);
+    }
+    this.setState(upd);
+    if (s.auto) this.later(() => { if (this.state.auto && this.state.card === 'in' && !this.state.spinning) this.spin(); }, total > 0 ? 2000 : 700);
+  }
+
+  // --- buttons ---
+  press(name, v) {
+    if (v) { this.initAudio(); this.clickSnd(); }
+    this.setState(s => ({ pressed: { ...s.pressed, [name]: v } }));
+  }
+  btn(name, click) {
+    return { down: () => this.press(name, true), up: () => this.press(name, false), leave: () => this.press(name, false), click };
+  }
+  renderVals() {
+    const s = this.state, p = s.pressed;
+    const b = {
+      plusL: this.btn('plusL', () => this.changeLines(1)), minusL: this.btn('minusL', () => this.changeLines(-1)),
+      plusR: this.btn('plusR', () => this.changeBet(1)), minusR: this.btn('minusR', () => this.changeBet(-1)),
+      maxbet: this.btn('maxbet', () => this.maxBet()), cashout: this.btn('cashout', () => this.cashOut()),
+      auto: this.btn('auto', () => this.toggleAuto()), spin: this.btn('spin', () => this.spinOrStop()),
+    };
+    const lit = {
+      spin: p.spin ? 0 : 1, auto: (p.auto || s.auto) ? 0 : 1, cashout: p.cashout ? 0 : 1, maxbet: p.maxbet ? 0 : 1,
+      plusL: p.plusL ? 0 : 1, minusL: p.minusL ? 0 : 1, plusR: p.plusR ? 0 : 1, minusR: p.minusR ? 0 : 1,
+    };
+    const bounce = {};
+    ['spin','auto','cashout','maxbet','plusL','minusL','plusR','minusR'].forEach(k => { bounce[k] = p[k] ? 'scale(0.965)' : 'scale(1)'; });
+    const winCells = new Set();
+    s.winLines.forEach(w => { for (let i = 0; i < w.count; i++) winCells.add(i + ':' + LINES[w.li][i]); });
+    const dim = s.winLines.length > 0;
+    const reels = s.pos.map((pos, i) => {
+      const fl = Math.floor(pos), fr = pos - fl;
+      const r = this.reels[i], moving = r && r.phase === 'run';
+      const cells = [];
+      for (let k = -2; k <= 2; k++) {
+        const id = STRIP[mod(fl + k, N)], sym = SYMS[id], row = k + 1;
+        const onWin = !dim || (fr === 0 && winCells.has(i + ':' + row));
+        cells.push({ isImg: !!sym.img, bg: sym.img ? 'url(' + sym.img + ')' : 'none', isGlyph: !sym.img, glyph: sym.g || '', fs: '4.7cqw', top: ((row - fr) * 33.333) + '%', op: onWin ? 1 : 0.3 });
+      }
+      return { cells, filter: moving ? 'blur(0.18cqw)' : 'none' };
+    });
+    const winLinesSvg = s.winLines.map(w => {
+      const pts = []; for (let i = 0; i < 5; i++) pts.push((i * 100 + 50) + ',' + (LINES[w.li][i] * 100 + 50));
+      return { points: pts.join(' '), color: LINE_COLORS[w.li] };
+    });
+    const activeLinesSvg = LINES.slice(0, s.lines).map((line, li) => {
+      const pts = []; for (let i = 0; i < 5; i++) pts.push((i * 100 + 50) + ',' + (line[i] * 100 + 50));
+      return { points: pts.join(' '), color: LINE_COLORS[li], num: String(li + 1), labelTop: (line[0] * 33.333 + 16.667) + '%', labelLeft: li >= 3 ? 'auto' : '0.8cqw', labelRight: li >= 3 ? '0.8cqw' : 'auto' };
+    });
+    const inCard = s.card === 'in';
+    const anim = s.card === 'inserting' ? 'cardInsert 1.5s linear forwards'
+      : s.card === 'ejecting' ? 'cardInsert 1.15s linear reverse forwards'
+      : inCard ? 'none' : 'cardIdle 3.4s ease-in-out infinite';
+    const card = { opacity: inCard ? 0 : 1, anim };
+    return {
+      leverRef: this.leverRef,
+      b, lit, bounce, reels, winLinesSvg, card, toggleCard: this.toggleCard, cardCursor: s.card === 'out' ? 'pointer' : 'default',
+      noCard: !inCard, cardHint: s.card === 'out',
+      showWin: s.showWin, winText: s.winText,
+      showLines: !!s.showLines, activeLinesSvg,
+      linesLabel: s.lines + (s.lines === 1 ? ' LINE' : ' LINES') + '  ×  ' + BETS[s.betIdx] + '  =  ' + fmt(this.totalBet()) + ' PER SPIN',
+      jackpotText: '$' + fmt(s.jackpot),
+      msg: s.msg,
+      creditsText: inCard ? fmt(s.credits) : '——',
+      linesText: String(s.lines), betText: String(BETS[s.betIdx]), totalBetText: fmt(this.totalBet()),
+      winValText: s.lastWin ? fmt(s.lastWin) : '0',
+    };
+  }
+}
+</script>
+</body>
+</html>
